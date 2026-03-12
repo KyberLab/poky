@@ -17,7 +17,14 @@ import os.path
 import sys
 import warnings
 from bb.compat import total_ordering
-from collections import Mapping
+try:
+    from collections.abc import Mapping
+except ImportError:
+    from collections import Mapping
+try:
+    from collections.abc import MutableMapping
+except ImportError:
+    from collections import MutableMapping
 import sqlite3
 import contextlib
 
@@ -29,7 +36,7 @@ if sqlversion[0] < 3 or (sqlversion[0] == 3 and sqlversion[1] < 3):
 logger = logging.getLogger("BitBake.PersistData")
 
 @total_ordering
-class SQLTable(collections.MutableMapping):
+class SQLTable(MutableMapping):
     class _Decorators(object):
         @staticmethod
         def retry(*, reconnect=True):
